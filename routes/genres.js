@@ -1,9 +1,7 @@
-const Joi = require('joi');
-
 const express = require('express');
-const app = express();
-app.use(express.json());    
-const port = 3000 || process.env.PORT;
+const Joi = require('joi');
+const router = express.Router();
+router.use(express.json());
 
 const genres = [
     {id: 1, name:'Action'},
@@ -22,15 +20,11 @@ const movies = [
     {id: 6, name:'Pulp Fiction'},
 ];
 
-app.get('/vidly.com', (req, res)=>{
-    console.log('Welcome to your website ^_^ ');
-});
-
-app.get('/vidly.com/api/genres', (req, res)=>{
+router.get('/', (req, res)=>{
     res.send(genres);
 });
 
-app.post('/vidly.com/api/genres', (req, res)=>{
+router.post('/', (req, res)=>{
     const {error} =  validateInput(req.body)
     if(error) return res.status(400).send(error.details[0].message);
     
@@ -42,7 +36,7 @@ app.post('/vidly.com/api/genres', (req, res)=>{
     res.send(genre);
 });
 
-app.put('/vidly.com/api/genres/:id', (req, res)=>{
+router.put('/:id', (req, res)=>{
     const genre = genres.find(c => c.id === parseInt(req.body.params));
     if(!genre) return res.status(404).send("There's no genre with this id!!");
 
@@ -54,7 +48,7 @@ app.put('/vidly.com/api/genres/:id', (req, res)=>{
     
 });
 
-app.delete('/vidly.com/api/genres/:id', (req, res)=>{
+router.delete('/:id', (req, res)=>{
     const genre = genres.find(c => c.id === parseInt(req.body.params));
     if(!genre) return res.status(404).send("There's no genre with this id!!");
 
@@ -72,6 +66,4 @@ function validateInput(genre){
 }
 
 
-app.listen(port, ()=>{
-    console.log(`Listening on port ${port}`);
-});
+module.exports = router;
